@@ -25,7 +25,7 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
 		
 		if (isset($_GET['del_group']) and is_numeric($_GET['del_group'])) {
 			$this->deleteGroup($_GET['del_group']);
-			cmf_redirect(HTTP_ROOT . ADMIN . '/module/Menu/');
+			sc_redirect(HTTP_ROOT . ADMIN . '/module/Menu/');
 		}
 
 		$this->View->setTpl(DIR_MODULES . 'Menu/Admin.tpl');

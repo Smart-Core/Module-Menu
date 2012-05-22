@@ -1,15 +1,5 @@
 <?php 
-/*
-foreach ($this as $key => $value) {
-	cmf_dump($key);
-}
 
-cmf_dump(self::getPaths());
-
-if (in_array('\var\www\site.ru\system\\', self::getPaths())) {
-	cmf_dump('<b>yes</b>');
-}
-*/
 $level = 0;
 $first_child = true;
 
