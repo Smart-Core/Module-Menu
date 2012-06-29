@@ -2,7 +2,7 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
-use SmartCore\Bundle\EngineBundle\Engine\Module;
+use SmartCore\Bundle\EngineBundle\Controller\Module;
 
 class Menu extends Module
 {
