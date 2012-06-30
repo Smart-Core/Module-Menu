@@ -3,13 +3,14 @@
 namespace SmartCore\Module\Menu\Controller;
 
 use SmartCore\Bundle\EngineBundle\Controller\Module;
+use SmartCore\Bundle\EngineBundle\Response;
 
-class Menu extends Module
+class MenuController extends Module
 {
-	protected $menu_group_id;
-	protected $max_depth;
-	protected $css_class;
-	protected $tpl;
+	protected $menu_group_id = 'A';
+	protected $max_depth = 0;
+	protected $css_class = '';
+	protected $tpl = '';
 
 	protected $_tree_level = 0;
 	protected $_folder_tree_list_arr = array();
@@ -23,6 +24,7 @@ class Menu extends Module
 	 */
 	protected function init()
 	{
+        /*
 		$this->NodeProperties->setDefaultParams(array(
 			'menu_group_id'	=> 0,
 			'max_depth'		=> 0,
@@ -30,6 +32,7 @@ class Menu extends Module
 			'selected_inheritance' => 0,
 			'tpl' 			=> '',
 			));
+        */
 		$this->View->setOptions(array(
 			'engine'		=> 'simple',
 			'template_ext' => '.tpl',
@@ -39,7 +42,7 @@ class Menu extends Module
 	/**
 	 * Запуск модуля.
 	 */
-	public function indexAction($params)
+	public function indexAction($params = null)
 	{
 		if (!empty($this->tpl)) {
 			$this->View->setTemplateName($this->tpl);
@@ -48,6 +51,8 @@ class Menu extends Module
 		$this->_getTreeList($this->getTree(0, $this->max_depth));
 		$this->View->css_class = $this->css_class;
 		$this->View->items = $this->_folder_tree_list_arr;
+        
+        return new Response($this->View);
 	}	
 
 	/**
