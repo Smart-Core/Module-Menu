@@ -24,15 +24,6 @@ class MenuController extends Module
 	 */
 	protected function init()
 	{
-        /*
-		$this->NodeProperties->setDefaultParams(array(
-			'menu_group_id'	=> 0,
-			'max_depth'		=> 0,
-			'css_class'		=> '',
-			'selected_inheritance' => 0,
-			'tpl' 			=> '',
-			));
-        */
 		$this->View->setOptions(array(
 			'engine'		=> 'simple',
 			'template_ext' => '.tpl',
