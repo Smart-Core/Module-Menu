@@ -43,7 +43,8 @@ class MenuController extends Module
         $this->View->css_class = $this->css_class;
         $this->View->items = $this->_folder_tree_list_arr;
         
-        return new Response($this->View);
+//        return new Response($this->View);
+        return $this->View;
     }    
 
     /**
