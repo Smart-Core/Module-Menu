@@ -2,8 +2,8 @@
 
 namespace SmartCore\Module\Menu;
 
-use SmartCore\Bundle\EngineBundle\ModuleBundle;
+use SmartCore\Bundle\EngineBundle\Module\Bundle;
 
-class SmartCoreMenuModule extends ModuleBundle
+class SmartCoreMenuModule extends Bundle
 {
 }

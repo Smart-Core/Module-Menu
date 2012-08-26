@@ -2,10 +2,10 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
-use SmartCore\Bundle\EngineBundle\Controller\Module;
+use SmartCore\Bundle\EngineBundle\Module\Controller;
 use SmartCore\Bundle\EngineBundle\Response;
 
-class MenuController extends Module
+class MenuController extends Controller
 {
     protected $menu_group_id = 'A';
     protected $max_depth = 0;
