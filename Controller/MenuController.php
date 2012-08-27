@@ -61,7 +61,7 @@ class MenuController extends Controller
         $params['folders'] = array();
         $sql = "SELECT folder_id
             FROM {$this->DB->prefix()}menu_items
-            WHERE site_id = '{$this->Env->site_id}'
+            WHERE site_id = '{$this->engine('env')->site_id}'
             AND is_active = '1'
             AND folder_id > '0'
             AND group_id = '{$this->menu_group_id}' ";
@@ -104,7 +104,7 @@ class MenuController extends Controller
             WHERE i.group_id = '$this->menu_group_id'
                 AND i.is_active = 1
                 AND f.is_active = 1
-                AND t.language_id = '{$this->Env->language_id}'
+                AND t.language_id = '{$this->engine('env')->language_id}'
             ORDER BY i.pos ";
         $result = $this->DB->query($sql);
         while($row = $result->fetchObject()) {
@@ -219,23 +219,25 @@ class MenuController extends Controller
 //        $folder = $Folder->getData($folder_name, $folder_pid);
         
         // LEFT JOIN {$this->DB->prefix()}engine_folders_translation AS ft USING (folder_id)
-        // AND ft.site_id = '{$this->Env->site_id}'
-        // AND ft.language_id = '{$this->Env->language_id}'
+        // AND ft.site_id = '{$this->engine('env')->site_id}'
+        // AND ft.language_id = '{$this->engine('env')->language_id}'
         $sql = "SELECT i.item_id, i.is_active, i.pos, i.pid, i.folder_id, i.suffix, i.direct_link, i.title, i.descr, i.options, f.permissions,
                 f.title AS folder_title, f.descr AS folder_descr
             FROM {$this->DB->prefix()}menu_items AS i
             LEFT JOIN {$this->DB->prefix()}engine_folders AS f USING (folder_id)
             WHERE i.group_id = '$this->menu_group_id'
                 $is_active
-                AND i.site_id = '{$this->Site->getId()}'
-                AND f.site_id = '{$this->Site->getId()}'
+                AND i.site_id = '{$this->engine('site')->getId()}'
+                AND f.site_id = '{$this->engine('site')->getId()}'
                 AND f.is_active = 1
                 AND i.pid = $parent_id
             ORDER BY i.pos ";
         $result = $this->DB->query($sql);
         while($row = $result->fetchObject()) {
             // проверяем возможность на чтение и просмотр папки.
-            if ($this->Permissions->isAllowed('folder', 'read', $row->permissions) == 0 or $this->Permissions->isAllowed('folder', 'view', $row->permissions) == 0) {
+            if ($this->engine('permissions')->isAllowed('folder', 'read', $row->permissions) == 0 
+                or $this->engine('permissions')->isAllowed('folder', 'view', $row->permissions) == 0
+            ) {
                 continue; //echo "$row->folder_title";    
             }
             
@@ -244,35 +246,35 @@ class MenuController extends Controller
                 continue;
             }
             
-            $uri = empty($row->direct_link) ? $this->Folder->getUri($row->folder_id) : $row->direct_link;
+            $uri = empty($row->direct_link) ? $this->engine('folder')->getUri($row->folder_id) : $row->direct_link;
             $title = empty($row->title) ? $row->folder_title : $row->title;
             
             $selected = 0;
             if ($this->selected_inheritance) {
-                foreach ($this->Breadcrumbs->get() as $breadcrumb) {
-                    if ($breadcrumb['uri'] === $uri and ($uri != $this->Env->base_path or $this->Env->current_folder_id == 1)) {
+                foreach ($this->engine('breadcrumbs')->get() as $breadcrumb) {
+                    if ($breadcrumb['uri'] === $uri and ($uri != $this->engine('env')->base_path or $this->engine('env')->current_folder_id == 1)) {
                         $selected = 1;
                         break;
                     }
                 }
             } else {
-                if ($this->Env->current_folder_id == $row->folder_id) {
+                if ($this->engine('env')->current_folder_id == $row->folder_id) {
                     $selected = 1;
                 }
             }
             
             $items[$row->item_id] = array(
-                'selected'    => $selected,
-                'uri'        => $uri,
-                'title'        => $title,
-                'descr'        => $row->folder_descr,
-                'folder_id'    => $row->folder_id,
-                'options'    => unserialize($row->options),
+                'selected'  => $selected,
+                'uri'       => $uri,
+                'title'     => $title,
+                'descr'     => $row->folder_descr,
+                'folder_id' => $row->folder_id,
+                'options'   => unserialize($row->options),
                 // '_temp_group_id' => $group_id,
-                'pid'        => $row->pid,
-                'pos'        => $row->pos,
-                'is_active'    => $row->is_active,
-                'items'        => $this->getTree($row->item_id, $max_depth),
+                'pid'       => $row->pid,
+                'pos'       => $row->pos,
+                'is_active' => $row->is_active,
+                'items'     => $this->getTree($row->item_id, $max_depth),
                 );
             
         } // end while $row
