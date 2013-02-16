@@ -88,9 +88,9 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
         
         $sql = "
             INSERT INTO {$this->DB->prefix()}menu_groups
-                (site_id, name, descr, pos)
+                (name, descr, pos)
             VALUES
-                ('{$this->engine('env')->site_id}', $name, $descr, '$pos') ";
+                ($name, $descr, '$pos') ";
         $this->DB->query($sql);
         return $this->DB->lastInsertId();
     }
@@ -104,8 +104,7 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
     public function deleteGroup($group_id)
     {
         $sql = "DELETE FROM {$this->DB->prefix()}menu_groups
-            WHERE site_id = '{$this->engine('env')->site_id}'
-            AND group_id = {$this->DB->quote($group_id)} ";
+            WHERE group_id = {$this->DB->quote($group_id)} ";
         $this->DB->exec($sql);
         return true;
     }
@@ -126,14 +125,12 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
         
         $sql = "SELECT * 
             FROM {$this->DB->prefix()}menu_groups
-            WHERE site_id = '{$this->engine('env')->site_id}'
             ORDER BY pos ASC ";
         $result = $this->DB->query($sql);
         while ($row = $result->fetchObject()) {
             $sql2 = "SELECT count(item_id) AS cnt
                 FROM {$this->DB->prefix()}menu_items
-                WHERE site_id = '{$this->engine('env')->site_id}'
-                AND group_id = '{$row->group_id}' ";
+                WHERE group_id = '{$row->group_id}' ";
             $result2 = $this->DB->query($sql2);
             $row2 = $result2->fetchObject();
             
@@ -373,8 +370,7 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
                 pos = '$pos',
                 direct_link = $direct_link,
                 title = $title
-            WHERE item_id = '$pd[item_id]'
-            AND site_id = '{$this->engine('env')->site_id}' ";
+            WHERE item_id = '$pd[item_id]'";
         $this->DB->exec($sql);
     }
     
@@ -384,11 +380,11 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
     protected function deleteItem($pd)
     {
         return is_numeric($pd['item_id'])
-            ? $this->DB->exec("DELETE FROM {$this->DB->prefix()}menu_items WHERE item_id = '$pd[item_id]' AND site_id = '{$this->engine('env')->site_id}' ")
+            ? $this->DB->exec("DELETE FROM {$this->DB->prefix()}menu_items WHERE item_id = '$pd[item_id]'")
             : false;
         /*        
         if (is_numeric($pd['item_id'])) {
-            return $this->DB->exec("DELETE FROM {$this->DB->prefix()}menu_items WHERE item_id = '$pd[item_id]' AND site_id = '{$this->engine('env')->site_id}' ");
+            return $this->DB->exec("DELETE FROM {$this->DB->prefix()}menu_items WHERE item_id = '$pd[item_id]' ");
         } else {
             return false;
         }
@@ -409,9 +405,9 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
 
         $sql = "
             INSERT INTO {$this->DB->prefix()}menu_items
-                (pid, site_id, pos, is_active, folder_id, group_id, direct_link, title)
+                (pid, pos, is_active, folder_id, group_id, direct_link, title)
             VALUES
-                ('$pid', '{$this->engine('env')->site_id}', '$pos', '$is_active', $folder_id, '{$this->menu_group_id}', $direct_link, $title) ";                
+                ('$pid', '$pos', '$is_active', $folder_id, '{$this->menu_group_id}', $direct_link, $title) ";
         $this->DB->exec($sql);
     }
 

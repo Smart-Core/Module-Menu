@@ -33,7 +33,7 @@ class MenuController extends Controller
     /**
      * Запуск модуля.
      */
-    public function indexAction($params = null)
+    public function indexAction()
     {
         if (!empty($this->tpl)) {
             $this->View->setTemplateName($this->tpl);
@@ -43,9 +43,8 @@ class MenuController extends Controller
         $this->View->css_class = $this->css_class;
         $this->View->items = $this->_folder_tree_list_arr;
         
-//        return new Response($this->View);
-        return $this->View;
-    }    
+        return new Response($this->View);
+    }
 
     /**
      * Получить параметры кеширования модуля.
@@ -60,9 +59,8 @@ class MenuController extends Controller
         // Зависимости от папок: все пункты меню, которые ссылаются на папки.
         $params['folders'] = array();
         $sql = "SELECT folder_id
-            FROM {$this->DB->prefix()}menu_items
-            WHERE site_id = '{$this->engine('env')->site_id}'
-            AND is_active = '1'
+            FROM menu_items
+            WHERE is_active = '1'
             AND folder_id > '0'
             AND group_id = '{$this->menu_group_id}' ";
         $result = $this->DB->query($sql);
@@ -129,40 +127,18 @@ class MenuController extends Controller
     /**
      *  
      */
-    public function getMenuGroupsListArr($selected = 1, $domain_id = false)
+    public function getMenuGroupsListArr($selected = 1)
     {
         $data = array();
-        $sql = "SELECT * FROM {$this->DB->prefix()}menu_groups ";
-        $result = $this->DB->query($sql);
+        $result = $this->DB->query("SELECT * FROM menu_groups ");
         while($row = $result->fetchObject()) {
-            $data[$row->group_id]['title'] = "$row->descr ($row->name)";
-            $data[$row->group_id]['level'] = 0;
-            $data[$row->group_id]['selected'] = $row->group_id == $selected ? 1 : 0;
+            $data[$row->group_id] = array(
+                'title' => "$row->descr ($row->name)",
+                'level' => 0,
+                'selected' => $row->group_id == $selected ? 1 : 0,
+            );
         }
         return $data;
-    }
-
-    /**
-     * Обработчик POST данных
-     * 
-     * @param int $pd
-     * @param string $submit
-     * @return void
-     */
-    public function postProcessor($pd, $submit)
-    {
-        switch ($submit) {
-            case 'save':
-                $this->updateItem($pd);
-                break;
-            case 'create':
-                $this->createItem($pd);
-                break;
-            case 'delete':
-                $this->deleteItem($pd);
-                break;
-            default:
-        }
     }
 
     /**
@@ -215,20 +191,16 @@ class MenuController extends Controller
         
         // @todo сделать через класс Folder
 //        $Folder = new Folder();
-        
 //        $folder = $Folder->getData($folder_name, $folder_pid);
         
         // LEFT JOIN {$this->DB->prefix()}engine_folders_translation AS ft USING (folder_id)
-        // AND ft.site_id = '{$this->engine('env')->site_id}'
         // AND ft.language_id = '{$this->engine('env')->language_id}'
         $sql = "SELECT i.item_id, i.is_active, i.pos, i.pid, i.folder_id, i.suffix, i.direct_link, i.title, i.descr, i.options, f.permissions,
                 f.title AS folder_title, f.descr AS folder_descr
-            FROM {$this->DB->prefix()}menu_items AS i
-            LEFT JOIN {$this->DB->prefix()}engine_folders AS f USING (folder_id)
+            FROM menu_items AS i
+            LEFT JOIN engine_folders AS f USING (folder_id)
             WHERE i.group_id = '$this->menu_group_id'
                 $is_active
-                AND i.site_id = '{$this->engine('site')->getId()}'
-                AND f.site_id = '{$this->engine('site')->getId()}'
                 AND f.is_active = 1
                 AND i.pid = $parent_id
             ORDER BY i.pos ";
@@ -252,15 +224,13 @@ class MenuController extends Controller
             $selected = 0;
             if ($this->selected_inheritance) {
                 foreach ($this->engine('breadcrumbs')->get() as $breadcrumb) {
-                    if ($breadcrumb['uri'] === $uri and ($uri != $this->engine('env')->base_path or $this->engine('env')->current_folder_id == 1)) {
+                    if ($breadcrumb['uri'] === $uri and ($uri != $this->engine('env')->base_url or $this->engine('env')->current_folder_id == 1)) {
                         $selected = 1;
                         break;
                     }
                 }
-            } else {
-                if ($this->engine('env')->current_folder_id == $row->folder_id) {
-                    $selected = 1;
-                }
+            } elseif ($this->engine('env')->current_folder_id == $row->folder_id) {
+                $selected = 1;
             }
             
             $items[$row->item_id] = array(
