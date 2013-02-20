@@ -25,8 +25,7 @@ class MenuController extends Controller
     protected function init()
     {
         $this->View->setOptions(array(
-            'engine'        => 'simple',
-            'template_ext'  => '.tpl',
+            'bundle' => 'MenuModule::',
         ));
     }
 

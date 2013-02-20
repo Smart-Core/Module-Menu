@@ -1,0 +1,9 @@
+{% if css_class %}
+<ul class="{{ css_class }}">
+{% else %}
+<ul>
+{% endif %}
+    {% for item in items %}
+    <li{% if item.selected %} class="selected"{% endif %}><a href="{{ item.uri }}" title="{{ item.descr }}">{{ item.title }}</a></li>
+    {% endfor %}
+</ul>
