@@ -37,7 +37,7 @@ class MenuController extends Controller
         if (!empty($this->tpl)) {
             $this->View->setTemplateName($this->tpl);
         }
-        
+
         $this->_getTreeList($this->getTree(0, $this->max_depth));
         $this->View->css_class = $this->css_class;
         $this->View->items = $this->_folder_tree_list_arr;
