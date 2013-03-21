@@ -62,7 +62,7 @@ class MenuController extends Controller
             WHERE is_active = '1'
             AND folder_id > '0'
             AND group_id = '{$this->menu_group_id}' ";
-        $result = $this->DB->query($sql);
+        $result = $this->container->get('engine.db')->query($sql);
         while ($row = $result->fetchObject()) {
             $params['folders'][$row->folder_id] = 1;
         }
@@ -203,7 +203,7 @@ class MenuController extends Controller
                 AND f.is_active = 1
                 AND i.pid = $parent_id
             ORDER BY i.pos ";
-        $result = $this->DB->query($sql);
+        $result = $this->container->get('engine.db')->query($sql);
         while($row = $result->fetchObject()) {
             // проверяем возможность на чтение и просмотр папки.
             if ($this->engine('permissions')->isAllowed('folder', 'read', $row->permissions) == 0 
