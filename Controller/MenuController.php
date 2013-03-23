@@ -71,59 +71,6 @@ class MenuController extends Controller
     }
 
     /**
-     * получаем древовидный список элементов меню.
-     * 
-     * @uses Kernel
-     * @uses Permissions
-     * 
-     * @todo Сделать поддержку древовидности (вложенных пунктов меню)
-     *
-    protected function getItems_old($pid = false, $max_depth = false)
-    {
-        $items = array();
-        $sql = "SELECT
-                i.item_id,
-                i.is_active,
-                i.pos,
-                i.pid,
-                i.folder_id,
-                i.suffix,
-                i.direct_link,
-                i.title,
-                i.descr,
-                i.options,
-                f.permissions,
-                t.title AS folder_title,
-                t.descr AS folder_descr
-            FROM {$this->DB->prefix()}menu_items AS i
-            LEFT JOIN {$this->DB->prefix()}engine_folders AS f USING (folder_id)
-            LEFT JOIN {$this->DB->prefix()}engine_folders_translation AS t USING (folder_id)
-            WHERE i.group_id = '$this->menu_group_id'
-                AND i.is_active = 1
-                AND f.is_active = 1
-                AND t.language_id = '{$this->engine('env')->language_id}'
-            ORDER BY i.pos ";
-        $result = $this->DB->query($sql);
-        while($row = $result->fetchObject()) {
-            // проверяем возможность на чтение и просмотр папки.
-            if ($this->Permissions->isAllowed('folder', 'read', $row->permissions) == 0 or $this->Permissions->isAllowed('folder', 'view', $row->permissions) == 0) {
-                continue; //echo "$row->folder_title";    
-            }
-
-            $items[$row->item_id]['selected'] = 0;
-            $items[$row->item_id]['uri'] = Folder::getUri($row->folder_id);
-            $items[$row->item_id]['title'] = $row->folder_title;
-            $items[$row->item_id]['descr'] = $row->folder_descr;
-//            $items[$row->item_id]['folder_id'] = $row->folder_id;
-            $items[$row->item_id]['options'] = unserialize($row->options);
-//            $items[$row->item_id]['_temp_group_id'] = $group_id;
-//            $items[$row->item_id]['items'] = array(); // $this->getItems($row->item_id, $max_depth);
-//            $items[$row->item_id]['pid'] = $row->pid;
-        }
-        return $items;
-    }*/
-    
-    /**
      *  
      */
     public function getMenuGroupsListArr($selected = 1)
@@ -189,15 +136,10 @@ class MenuController extends Controller
         $is_active = $this->only_is_active ? 'AND i.is_active = 1' : '';
         
         // @todo сделать через класс Folder
-//        $Folder = new Folder();
-//        $folder = $Folder->getData($folder_name, $folder_pid);
-        
-        // LEFT JOIN {$this->DB->prefix()}engine_folders_translation AS ft USING (folder_id)
-        // AND ft.language_id = '{$this->engine('env')->language_id}'
-        $sql = "SELECT i.item_id, i.is_active, i.pos, i.pid, i.folder_id, i.suffix, i.direct_link, i.title, i.descr, i.options, f.permissions,
-                f.title AS folder_title, f.descr AS folder_descr
+        $sql = "SELECT i.item_id, i.is_active, i.pos, i.pid, i.folder_id, i.suffix, i.direct_link, i.title, i.descr, i.options,
+                f.permissions, f.title AS folder_title, f.descr AS folder_descr
             FROM menu_items AS i
-            LEFT JOIN engine_folders AS f USING (folder_id)
+            LEFT JOIN aaa_engine_folders AS f USING (folder_id)
             WHERE i.group_id = '$this->menu_group_id'
                 $is_active
                 AND f.is_active = 1
@@ -218,12 +160,14 @@ class MenuController extends Controller
             }
             
             $uri = empty($row->direct_link) ? $this->engine('folder')->getUri($row->folder_id) : $row->direct_link;
+
             $title = empty($row->title) ? $row->folder_title : $row->title;
             
             $selected = 0;
             if ($this->selected_inheritance) {
                 foreach ($this->engine('breadcrumbs')->get() as $breadcrumb) {
-                    if ($breadcrumb['uri'] === $uri and ($uri != $this->engine('env')->base_url or $this->engine('env')->current_folder_id == 1)) {
+
+                    if ($breadcrumb['uri'] === $uri and ($uri != $this->get('request')->getBaseUrl() . '/' or $this->engine('env')->current_folder_id == 1)) {
                         $selected = 1;
                         break;
                     }
