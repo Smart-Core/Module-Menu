@@ -148,8 +148,8 @@ class MenuController extends Controller
         $result = $this->container->get('engine.db')->query($sql);
         while($row = $result->fetchObject()) {
             // проверяем возможность на чтение и просмотр папки.
-            if ($this->engine('permissions')->isAllowed('folder', 'read', $row->permissions) == 0 
-                or $this->engine('permissions')->isAllowed('folder', 'view', $row->permissions) == 0
+            if ($this->get('engine.permissions')->isAllowed('folder', 'read', $row->permissions) == 0
+                or $this->get('engine.permissions')->isAllowed('folder', 'view', $row->permissions) == 0
             ) {
                 continue; //echo "$row->folder_title";    
             }
@@ -159,20 +159,20 @@ class MenuController extends Controller
                 continue;
             }
             
-            $uri = empty($row->direct_link) ? $this->engine('folder')->getUri($row->folder_id) : $row->direct_link;
+            $uri = empty($row->direct_link) ? $this->get('engine.folder')->getUri($row->folder_id) : $row->direct_link;
 
             $title = empty($row->title) ? $row->folder_title : $row->title;
             
             $selected = 0;
             if ($this->selected_inheritance) {
-                foreach ($this->engine('breadcrumbs')->get() as $breadcrumb) {
+                foreach ($this->get('engine.breadcrumbs')->get() as $breadcrumb) {
 
-                    if ($breadcrumb['uri'] === $uri and ($uri != $this->get('request')->getBaseUrl() . '/' or $this->engine('env')->current_folder_id == 1)) {
+                    if ($breadcrumb['uri'] === $uri and ($uri != $this->get('request')->getBaseUrl() . '/' or $this->get('engine.env')->current_folder_id == 1)) {
                         $selected = 1;
                         break;
                     }
                 }
-            } elseif ($this->engine('env')->current_folder_id == $row->folder_id) {
+            } elseif ($this->get('engine.env')->current_folder_id == $row->folder_id) {
                 $selected = 1;
             }
             

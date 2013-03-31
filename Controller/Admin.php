@@ -195,7 +195,7 @@ class Module_Menu_Admin extends Module_Menu implements Admin_ModuleInterface
         $items['edit'] = array(
             'popup_window_title' => 'Редактирование меню',
             'title' => 'Правка',
-            'link' => $this->engine('env')->current_folder_path . ACTION . '/' . $this->Node->id . '/',
+            'link' => $this->get('engine.env')->current_folder_path . ACTION . '/' . $this->Node->id . '/',
             'ico' => 'edit',
             );
         return $items;
