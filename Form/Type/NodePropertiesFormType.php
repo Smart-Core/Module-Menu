@@ -25,6 +25,6 @@ class NodePropertiesFormType extends AbstractType
 
     public function getName()
     {
-        return 'texter_node_properties';
+        return 'menu_node_properties';
     }
 }
