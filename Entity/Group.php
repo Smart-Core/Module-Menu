@@ -71,6 +71,11 @@ class Group
         $this->items = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return (string) $this->getName();
+    }
+
     public function getId()
     {
         return $this->group_id;
@@ -123,6 +128,16 @@ class Group
     public function getCreated()
     {
         return $this->created;
+    }
+
+    public function setItems($items)
+    {
+        $this->items = $items;
+    }
+
+    public function getItems()
+    {
+        return $this->items;
     }
 
     /**

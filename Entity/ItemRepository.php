@@ -8,6 +8,6 @@ class ItemRepository extends EntityRepository
 {
     public function findByParent(Item $parent_item = null)
     {
-        return $this->findBy(['parent_item' => $parent_item]);
+        return $this->findBy(['parent_item' => $parent_item], ['position' => 'ASC']);
     }
 }

@@ -29,6 +29,14 @@ class MenuBuilder extends ContainerAware
     protected $css_class;
 
     /**
+     * Глубина вложенности.
+     * @var integer
+     *
+     * @todo
+     */
+    protected $depth;
+
+    /**
      * Построение полной структуры, включая ноды.
      *
      * @param FactoryInterface  $factory
@@ -66,7 +74,7 @@ class MenuBuilder extends ContainerAware
         $defaul_options = $options + [
             'group'     => null,
             'is_admin'  => false,
-            'max_depth' => null,
+            'depth'     => null,
             'css_class' => null,
         ];
 
@@ -100,12 +108,10 @@ class MenuBuilder extends ContainerAware
                 $uri = $this->container->get('engine.folder')->getUri($item->getFolder()->getId());
             }
 
-            $title = (string) $item;
-
             if ($this->is_admin or $item->getIsActive()) {
-                $new_item = $menu->addChild($title, ['uri' => $uri]);
+                $new_item = $menu->addChild((string) $item, ['uri' => $uri]);
                 $new_item->setAttributes([
-                    //'class' => 'my_item',
+                    //'class' => 'my_item', // @todo аттрибуты для пунктов меню.
                     'title' => $item->getDescr(),
                 ]);
 
@@ -116,10 +122,7 @@ class MenuBuilder extends ContainerAware
                 continue;
             }
 
-            /** @var ItemInterface $sub_menu */
-            $sub_menu = $menu[$title];
-
-            $this->addChild($sub_menu, $item);
+            $this->addChild($menu[(string) $item], $item);
         }
     }
 }
