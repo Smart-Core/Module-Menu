@@ -1,13 +1,14 @@
-{% extends app.request.xmlHttpRequest ? '@SmartCoreEngine/ajax.html.twig' : '@SmartCoreEngine/Admin/module.html.twig' %}
+{% extends '@SmartCoreEngine/Admin/module.html.twig' %}
+{#{% extends app.request.xmlHttpRequest ? '@SmartCoreEngine/ajax.html.twig' : '@SmartCoreEngine/Admin/module.html.twig' %}#}
 
 {% block html_head_title %}Меню / {{ parent() }}{% endblock html_head_title %}
 
 
 {% block content %}
-<ul class="nav nav-tabs" id="myTab">
-    <li class="active"><a>Список всех групп меню</a></li>
-    {#<li><a href="#create">Создать новую группу</a></li>#}
-</ul>
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a>Список всех групп меню</a></li>
+        {#<li><a href="#create">Создать новую группу</a></li>#}
+    </ul>
 
 <div class="tab-content">
     <div class="tab-pane active" id="all">

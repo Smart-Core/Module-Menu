@@ -3,6 +3,7 @@
 namespace SmartCore\Module\Menu\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use SmartCore\Bundle\EngineBundle\Response;
 use SmartCore\Module\Menu\Entity\Group;
 use SmartCore\Module\Menu\Entity\Item;
@@ -74,10 +75,6 @@ class AdminController extends Controller
             if ($request->request->has('update')) {
                 $form->bind($request);
                 if ($form->isValid()) {
-
-//                    ld($_POST);
-//                    ldd($form->getData());
-
                     $em->persist($form->getData());
                     $em->flush();
 
@@ -85,6 +82,10 @@ class AdminController extends Controller
                         return new JsonResponse([
                             'status' => 'OK',
                             'message' => 'Menu item updated successful.',
+                            'overlay_redirect' => $this->generateUrl('cmf_admin_module_manage', [
+                                'module' => 'Menu',
+                                'slug' => $item->getGroup()->getId(),
+                            ]),
                         ]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Пункт меню обновлён.'); // @todo translate
@@ -136,6 +137,10 @@ class AdminController extends Controller
                         return new JsonResponse([
                             'status' => 'OK',
                             'message' => 'Group updated successful.',
+                            'overlay_redirect' => $this->generateUrl('cmf_admin_module_manage', [
+                                'module' => 'Menu',
+                                'slug' => $group_id,
+                            ]),
                         ]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Группа меню обновлена.'); // @todo translate
