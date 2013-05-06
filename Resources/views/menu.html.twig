@@ -1,22 +1,15 @@
-{% if css_class %}
-<ul class="{{ css_class }}">
-{% else %}
-<ul>
+{% set menu = knp_menu_get('MenuModule:MenuBuilder:full', [], {
+    'group': group,
+    'css_class': css_class,
+}) %}
+
+{% if not current_class %}
+    {% set current_class = 'current' %}
 {% endif %}
-{#<ul class="nav nav-list">#}
-    {% for item in items %}
-    {#<li{% if item.selected %} class="active"{% endif %}><a href="{{ item.uri }}" title="{{ item.descr }}"><i class="icon-minus icon-white"></i>{{ item.title }}</a></li>#}
-    <li{% if item.selected %} class="active"{% endif %}><a href="{{ item.uri }}" title="{{ item.descr }}">{{ item.title }}</a></li>
-    {% endfor %}
-    </ul>
-{#
-<ul class="nav nav-list">
-    <li><a href="#""><i class="icon-minus icon-white"></i>item 1</a></li>
-    <li><a href="#""><i class="icon-minus icon-white"></i>item 2</a>
-        <ul class="nav nav-list">
-            <li class="active"><a href="#""><i class="icon-minus icon-white"></i>item 2.1</a></li>
-        </ul>
-    </li>
-    <li><a href="#""><i class="icon-minus icon-white"></i>item 3</a></li>
-</ul>
-#}
+
+{{ knp_menu_render(menu, {
+    'currentAsLink': true,
+    'currentClass': current_class,
+    'compressed': false,
+    'depth': null,
+}) }}

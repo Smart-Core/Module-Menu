@@ -2,6 +2,7 @@
 
 namespace SmartCore\Module\Menu\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,6 +19,11 @@ class Group
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $group_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="group")
+     */
+    protected $items;
 
     /**
      * @ORM\Column(type="smallint", nullable=TRUE)
@@ -62,6 +68,7 @@ class Group
         $this->updated = null;
         $this->position = 0;
         $this->descr = null;
+        $this->items = new ArrayCollection();
     }
 
     public function getId()
