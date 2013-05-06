@@ -132,5 +132,4 @@ class Group
     {
         $this->updated = new \DateTime();
     }
-
 }

@@ -289,4 +289,12 @@ class Item
             $this->setParentItem(null);
         }
     }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function onUpdated()
+    {
+        $this->updated = new \DateTime();
+    }
 }
