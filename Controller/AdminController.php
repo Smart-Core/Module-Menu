@@ -3,6 +3,7 @@
 namespace SmartCore\Module\Menu\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SmartCore\Bundle\EngineBundle\Response;
 use SmartCore\Module\Menu\Entity\Group;
@@ -101,7 +102,10 @@ class AdminController extends Controller
                 $em->flush();
 
                 $this->get('session')->getFlashBag()->add('notice', 'Пункт меню удалён.');
-                return $this->redirect($this->generateUrl('cmf_admin_module_manage', ['module' => 'Menu']));
+                return $this->redirect($this->generateUrl('cmf_admin_module_manage', [
+                    'module' => 'Menu',
+                    'slug' => $item->getGroup()->getId(),
+                ]));
             }
         }
 

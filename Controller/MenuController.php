@@ -13,6 +13,7 @@ class MenuController extends Controller
         if (null == $this->View->menu = $this->getCache($cache_key)) {
             $em = $this->get('doctrine.orm.default_entity_manager');
 
+            // Хак для Menu\RequestVoter
             $this->get('request')->attributes->set('__selected_inheritance', $this->selected_inheritance);
 
             $this->View->menu = $this->renderView('MenuModule::menu.html.twig', [
@@ -27,6 +28,22 @@ class MenuController extends Controller
             $this->get('request')->attributes->set('__selected_inheritance', false);
         }
 
-        return new Response($this->View);
+        $response = new Response($this->View);
+
+        if ($this->getEip()) {
+            $response->setFrontControls([
+                'edit' => [
+                    'title' => 'Редактировать',
+                    'descr' => 'Пункты меню',
+                    'uri' => $this->generateUrl('cmf_admin_node_w_slug', [
+                        'id' => $this->node->getId(),
+                        'slug' => $this->group_id,
+                    ]),
+                    'default' => false,
+                ],
+            ]);
+        }
+
+        return $response;
     }
 }
