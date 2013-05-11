@@ -23,6 +23,7 @@ class ItemFormType extends AbstractType
             ->add('title', null, [
                 'attr' => ['class' => 'focused'],
             ])
+            ->add('url')
             ->add('descr')
             ->add('position')
         ;

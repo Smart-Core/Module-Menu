@@ -50,7 +50,7 @@ class Item
     protected $group;
 
     /**
-     * @ORM\OneToOne(targetEntity="SmartCore\Bundle\EngineBundle\Entity\Folder")
+     * @ORM\ManyToOne(targetEntity="SmartCore\Bundle\EngineBundle\Entity\Folder")
      * @ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")
      */
     protected $folder;

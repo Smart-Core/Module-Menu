@@ -21,7 +21,7 @@ class Group
     protected $group_id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="group")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="group", cascade={"persist", "remove"})
      */
     protected $items;
 

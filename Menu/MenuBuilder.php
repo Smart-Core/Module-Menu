@@ -92,7 +92,7 @@ class MenuBuilder extends ContainerAware
     protected function addChild(ItemInterface $menu, Item $parent_item = null)
     {
         if (null == $parent_item) {
-            $items = $this->em->getRepository('MenuModule:Item')->findByParent(null);
+            $items = $this->em->getRepository('MenuModule:Item')->findByParent($this->group, null);
         } else {
             $items = $parent_item->getChildren();
         }
@@ -105,7 +105,11 @@ class MenuBuilder extends ContainerAware
                     'slug' => 'item/' . $item->getId(),
                 ]);
             } else {
-                $uri = $this->container->get('engine.folder')->getUri($item->getFolder()->getId());
+                if ($folder = $item->getFolder()) {
+                    $uri = $this->container->get('engine.folder')->getUri($item->getFolder()->getId());
+                } else {
+                    $uri = $item->getUrl();
+                }
             }
 
             if ($this->is_admin or $item->getIsActive()) {

@@ -15,20 +15,23 @@
             <thead><tr>
                 <th>id</th>
                 <th>{{ 'Name'|trans }}</th>
-                <th>{{ 'Position'|trans }}</th>
                 <th>{{ 'Description'|trans }}</th>
+                <th>{{ 'Position'|trans }}</th>
                 <th>{{ 'Items count'|trans }}</th>
                 <th>{{ 'Actions'|trans }}</th>
             </tr></thead>
             <tbody>
             {% for group in groups %}
                 <tr>
-                    <td>{{ group.id}}</td>
-                    <td><a href="{{ path('cmf_admin_module_manage', {'module': 'Menu', 'slug': group.id}) }}">{{ group.name}}</a></td>
+                    <td>{{ group.id }}</td>
+                    <td><a href="{{ path('cmf_admin_module_manage', {'module': 'Menu', 'slug': group.id}) }}">{{ group.name }}</a></td>
+                    <td>{{ group.descr }}</td>
                     <td>{{ group.position}}</td>
-                    <td>{{ group.descr}}</td>
-                    <td>@todo</td>
-                    <td>@todo</td>
+                    <td>{{ group.items.count }}</td>
+                    <td>
+                        <a href="{{ path('cmf_admin_module_manage', {'module': 'Menu', 'slug': group.id }) }}">Пункты меню</a>
+                        <a href="{{ path('cmf_admin_module_manage', {'module': 'Menu', 'slug': group.id ~ '/edit' }) }}">Свойства группы</a>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

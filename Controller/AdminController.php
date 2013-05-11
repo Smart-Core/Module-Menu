@@ -23,9 +23,14 @@ class AdminController extends Controller
                 return $this->itemAction($request, $parts[1]);
             }
 
+            if (isset($parts[1]) and $parts[1] == 'edit') {
+                return $this->groupEditAction($request, $parts[0]);
+            }
+
             return $this->groupAction($request, $slug);
         }
 
+        // ----------------------------------------------------
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         $form = $this->createForm(new GroupFormType());
@@ -46,11 +51,12 @@ class AdminController extends Controller
                         ]);
                     } else {
                         $this->get('session')->getFlashBag()->add('notice', 'Группа меню создана.'); // @todo translate
-                        return $this->redirect($this->generateUrl('cmf_admin_module_manage', ['module' => 'Menu']));
+                        return $this->redirect($this->generateUrl('cmf_admin_module_manage', [
+                            'module' => 'Menu',
+                            'slug' => $group->getId(),
+                        ]));
                     }
                 }
-            } else if ($request->request->has('delete')) {
-                die('@todo');
             }
         }
 
@@ -116,9 +122,9 @@ class AdminController extends Controller
     }
 
     /**
-     * Редактирование группы меню
+     * Редактирование свойств группы меню.
      */
-    public function groupAction(Request $request, $group_id)
+    public function groupEditAction(Request $request, $group_id)
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -154,12 +160,43 @@ class AdminController extends Controller
                         ]));
                     }
                 }
-            } else if ($request->request->has('create_item')) {
-                $form_item = $this->createForm(new ItemFormType());
-                $form_item->bind($request);
-                if ($form_item->isValid()) {
+            } else if ($request->request->has('delete')) {
+                // @todo безопасное удаление, в частности отключение из нод и удаление всех связаных пунктов меню.
+                $em->remove($form->getData());
+                $em->flush();
+
+                $this->get('session')->getFlashBag()->add('notice', 'Группа меню удалеа.');
+                return $this->redirect($this->generateUrl('cmf_admin_module_manage', ['module' => 'Menu']));
+            }
+        }
+
+        return $this->render('MenuModule:Admin:group_edit.html.twig', [
+            'group' => $group,
+            'form_edit' => $form->createView(),
+        ]);
+    }
+    
+    /**
+     * Редактирование группы меню
+     */
+    public function groupAction(Request $request, $group_id)
+    {
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        $group = $em->find('MenuModule:Group', $group_id);
+
+        if (empty($group)) {
+            return $this->redirect($this->generateUrl('cmf_admin_module_manage', ['module' => 'Menu']));
+        }
+
+        $form = $this->createForm(new ItemFormType(), new Item());
+
+        if ($request->isMethod('POST')) {
+            if ($request->request->has('create_item')) {
+                $form->bind($request);
+                if ($form->isValid()) {
                     /** @var Item $item */
-                    $item = $form_item->getData();
+                    $item = $form->getData();
                     $item->setCreateByUserId($this->getUser()->getId());
                     $item->setGroup($group);
 
@@ -179,24 +216,12 @@ class AdminController extends Controller
                         ]));
                     }
                 }
-            } else if ($request->request->has('delete')) {
-                // @todo безопасное удаление, в частности отключение оз нод и удаление всех связаных пунктов меню.
-                $em->remove($form->getData());
-                $em->flush();
-
-                $this->get('session')->getFlashBag()->add('notice', 'Группа меню удалеа.');
-                return $this->redirect($this->generateUrl('cmf_admin_module_manage', ['module' => 'Menu']));
             }
-        }
-
-        if (!isset($form_item)) {
-            $form_item = $this->createForm(new ItemFormType(), new Item());
         }
 
         return $this->render('MenuModule:Admin:group.html.twig', [
             'group' => $group,
-            'form_edit' => $form->createView(),
-            'form_item_create' => $form_item->createView(),
+            'form_item_create' => $form->createView(),
         ]);
     }
 }
