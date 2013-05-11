@@ -10,7 +10,8 @@ class MenuController extends Controller
     {
         $cache_key = md5($this->get('request')->getRequestUri() . md5(serialize($this->node)));
 
-        if (null == $this->View->menu = $this->getCache($cache_key)) {
+        //if (null == $this->View->menu = $this->getCache($cache_key)) { // @todo инвалидацию кеша.
+        if (true) {
             $em = $this->get('doctrine.orm.default_entity_manager');
 
             // Хак для Menu\RequestVoter
@@ -39,6 +40,7 @@ class MenuController extends Controller
                         'id' => $this->node->getId(),
                         'slug' => $this->group_id,
                     ]),
+                    'overlay' => false,
                     'default' => false,
                 ],
             ]);
