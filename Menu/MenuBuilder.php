@@ -5,34 +5,39 @@ namespace SmartCore\Module\Menu\Menu;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
-use SmartCore\Module\Menu\Entity\Group;
+use SmartCore\Module\Menu\Entity\Menu;
 use SmartCore\Module\Menu\Entity\Item;
 
 class MenuBuilder extends ContainerAware
 {
-    /** @var \Doctrine\ORM\EntityManager $em */
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     protected $em;
 
-    /** @var Group $group */
-    protected $group;
+    /**
+     * @var Menu
+     */
+    protected $menu;
 
     /**
      * Режим администрирования.
+     *
      * @var bool
      */
     protected $is_admin;
 
     /**
      * CSS стиль меню.
+     *
      * @var string
      */
     protected $css_class;
 
     /**
      * Глубина вложенности.
-     * @var integer
      *
-     * @todo
+     * @var int
      */
     protected $depth;
 
@@ -50,7 +55,7 @@ class MenuBuilder extends ContainerAware
 
         $menu = $factory->createItem('menu');
 
-        if (empty($this->group)) {
+        if (empty($this->menu)) {
             return $menu;
         }
 
@@ -64,18 +69,19 @@ class MenuBuilder extends ContainerAware
     }
 
     /**
-     * Обработка конфига
+     * Обработка конфига.
+     *
      * @param array $options
      */
     protected function processConfig(array $options)
     {
-        $this->em = $this->container->get('doctrine.orm.default_entity_manager');
+        $this->em = $this->container->get('doctrine.orm.entity_manager');
 
         $defaul_options = $options + [
-            'group'     => null,
-            'is_admin'  => false,
-            'depth'     => null,
             'css_class' => null,
+            'depth'     => null,
+            'menu'      => null,
+            'is_admin'  => false,
         ];
 
         foreach ($defaul_options as $key => $value) {
@@ -87,46 +93,52 @@ class MenuBuilder extends ContainerAware
      * Рекурсивное построение дерева.
      *
      * @param ItemInterface $menu
-     * @param Folder        $parent_folder
+     * @param Item|null     $parent_item
      */
     protected function addChild(ItemInterface $menu, Item $parent_item = null)
     {
-        if (null == $parent_item) {
-            $items = $this->em->getRepository('MenuModule:Item')->findByParent($this->group, null);
-        } else {
-            $items = $parent_item->getChildren();
-        }
+        $items = (null == $parent_item)
+            ? $this->em->getRepository('MenuModule:Item')->findByParent($this->menu, null)
+            : $parent_item->getChildren();
 
         /** @var Item $item */
         foreach ($items as $item) {
             if ($this->is_admin) {
-                $uri = $this->container->get('router')->generate('cmf_admin_module_manage', [
-                    'module' => 'Menu',
-                    'slug' => 'item/' . $item->getId(),
-                ]);
+                $uri = $this->container->get('router')->generate('smart_module.menu.admin_item', ['item_id' => $item->getId()]);
             } else {
-                if ($folder = $item->getFolder()) {
-                    $uri = $this->container->get('engine.folder')->getUri($item->getFolder()->getId());
-                } else {
-                    $uri = $item->getUrl();
+                $itemUrl = $item->getUrl();
+
+                if ((null === $item->getFolder() or !$item->getFolder()->isActive()) and empty($itemUrl)) {
+                    continue;
                 }
+
+                $uri = $item->getFolder()
+                    ? $this->container->get('cms.folder')->getUri($item->getFolder())
+                    : $itemUrl;
             }
 
+            $item_title = $this->is_admin ? (string) $item.' (position: '.$item->getPosition().')' : (string) $item;
+            $item_title = isset($menu[$item_title]) ? $item_title.' ('.$item->getId().')' : $item_title;
+
             if ($this->is_admin or $item->getIsActive()) {
-                $new_item = $menu->addChild((string) $item, ['uri' => $uri]);
+                $new_item = $menu->addChild($item_title, ['uri' => $uri]);
                 $new_item->setAttributes([
                     //'class' => 'my_item', // @todo аттрибуты для пунктов меню.
-                    'title' => $item->getDescr(),
-                ]);
+                    'title' => $item->getDescription(),
+                ])->setExtras($item->getProperties());
 
-                if ($this->is_admin and !$item->getIsActive()) {
+                if (!$this->is_admin and $item->getOpenInNewWindow()) {
+                    $new_item->setLinkAttribute('target', '_blank');
+                }
+
+                if ($this->is_admin and (!$item->getIsActive() or (null != $item->getFolder() and !$item->getFolder()->isActive()))) {
                     $new_item->setAttribute('style', 'text-decoration: line-through;');
                 }
             } else {
                 continue;
             }
 
-            $this->addChild($menu[(string) $item], $item);
+            $this->addChild($menu[$item_title], $item);
         }
     }
 }

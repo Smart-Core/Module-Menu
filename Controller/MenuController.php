@@ -2,50 +2,43 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
-use SmartCore\Bundle\EngineBundle\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
 {
     public function indexAction()
     {
-        $cache_key = md5($this->get('request')->getRequestUri() . md5(serialize($this->node)));
+        $current_folder_path = $this->get('cms.context')->getCurrentFolderPath();
 
-        //if (null == $this->View->menu = $this->getCache($cache_key)) { // @todo инвалидацию кеша.
-        if (true) {
-            $em = $this->get('doctrine.orm.default_entity_manager');
+        $cache_key = md5('smart_module.menu'.$current_folder_path.$this->node->getId());
 
+        if (false == $menu = $this->getCacheService()->get($cache_key)) {
             // Хак для Menu\RequestVoter
             $this->get('request')->attributes->set('__selected_inheritance', $this->selected_inheritance);
+            $this->get('request')->attributes->set('__current_folder_path', $current_folder_path);
 
-            $this->View->menu = $this->renderView('MenuModule::menu.html.twig', [
-                'group' => $em->find('MenuModule:Group', $this->group_id),
-                'css_class' => $this->css_class,
-                'current_class' => '',
-                'depth' => $this->depth,
+            $menu = $this->renderView('MenuModule::menu.html.twig', [
+                'css_class'     => $this->css_class,
+                'current_class' => $this->current_class,
+                'depth'         => $this->depth,
+                'menu'          => $this->getDoctrine()->getManager()->find('MenuModule:Menu', $this->menu_id),
             ]);
 
-            $this->setCache($cache_key, $this->View->menu);
+            //$menu = $this->get('html.tidy')->prettifyFragment($menu);
 
-            $this->get('request')->attributes->set('__selected_inheritance', false);
+            $this->getCacheService()->set($cache_key, $menu, ['smart_module.menu', 'folder', 'node_'.$this->node->getId()]);
+
+            $this->get('request')->attributes->remove('__selected_inheritance');
+            $this->get('request')->attributes->remove('__current_folder_path');
         }
 
-        $response = new Response($this->View);
+        $this->node->addFrontControl('edit')
+            ->setTitle('Редактировать меню')
+            ->setUri($this->generateUrl('cms_admin_node_w_slug', [
+                'id'   => $this->node->getId(),
+                'slug' => $this->menu_id,
+            ]));
 
-        if ($this->getEip()) {
-            $response->setFrontControls([
-                'edit' => [
-                    'title' => 'Редактировать',
-                    'descr' => 'Пункты меню',
-                    'uri' => $this->generateUrl('cmf_admin_node_w_slug', [
-                        'id' => $this->node->getId(),
-                        'slug' => $this->group_id,
-                    ]),
-                    'overlay' => false,
-                    'default' => false,
-                ],
-            ]);
-        }
-
-        return $response;
+        return new Response($menu);
     }
 }

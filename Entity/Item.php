@@ -4,233 +4,247 @@ namespace SmartCore\Module\Menu\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Smart\CoreBundle\Doctrine\ColumnTrait;
+use SmartCore\Bundle\CMSBundle\Entity\Folder;
 
 /**
  * @ORM\Entity(repositoryClass="ItemRepository")
- * @ORM\HasLifecycleCallbacks
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="menu_items")
  */
 class Item
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $item_id;
+    use ColumnTrait\Id;
+    use ColumnTrait\CreatedAt;
+    use ColumnTrait\UpdatedAt;
+    use ColumnTrait\IsActive;
+    use ColumnTrait\Description;
+    use ColumnTrait\Position;
+    use ColumnTrait\Title;
+    use ColumnTrait\UserId;
 
     /**
-     * @ORM\Column(type="boolean", nullable=TRUE)
-     */
-    protected $is_active;
-
-    /**
+     * @var Item
+     *
      * @ORM\ManyToOne(targetEntity="Item", inversedBy="children")
-     * @ORM\JoinColumn(name="pid", referencedColumnName="item_id")
-     * -ORM\Column(nullable=TRUE)
+     * @ORM\JoinColumn(name="pid")
      */
     protected $parent_item;
 
     /**
+     * @var Item[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="Item", mappedBy="parent_item")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     protected $children;
 
     /**
-     * @ORM\Column(type="smallint", nullable=TRUE)
+     * @var Menu
+     *
+     * @ORM\ManyToOne(targetEntity="Menu", inversedBy="items")
      */
-    protected $position;
+    protected $menu;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="items")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="group_id")
-     */
-    protected $group;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="SmartCore\Bundle\EngineBundle\Entity\Folder")
-     * @ORM\JoinColumn(name="folder_id", referencedColumnName="folder_id")
+     * @var Folder
+     *
+     * @ORM\ManyToOne(targetEntity="SmartCore\Bundle\CMSBundle\Entity\Folder")
      */
     protected $folder;
 
     /**
-     * @ORM\Column(type="string", nullable=TRUE)
-     */
-    protected $title;
-
-    /**
-     * @ORM\Column(type="string", nullable=TRUE)
-     */
-    protected $descr;
-
-    /**
      * Custom url.
      *
-     * @ORM\Column(type="string", nullable=TRUE)
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $url;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true, options={"default":0})
      */
-    protected $create_by_user_id;
+    protected $open_in_new_window;
 
     /**
-     * Created datetime
+     * @var string
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="array", nullable=true)
      */
-    protected $created;
+    protected $properties;
 
     /**
-     * Last updated datetime
-     *
-     * @ORM\Column(type="datetime", nullable=TRUE)
+     * Для отображения в формах. Не маппится в БД.
      */
-    protected $updated;
+    protected $form_title = '';
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->children = new ArrayCollection();
-        $this->create_by_user_id = 0;
-        $this->created = new \DateTime();
-        $this->is_active = true;
-        $this->parent_item = null;
-        $this->position = 0;
-        $this->title = null;
-        $this->url = null;
-        $this->updated = null;
+        $this->children          = new ArrayCollection();
+        $this->created_at        = new \DateTime();
+        $this->is_active         = true;
+        $this->open_in_new_window = false;
+        $this->parent_item       = null;
+        $this->position          = 0;
+        $this->properties        = null;
+        $this->title             = null;
+        $this->url               = null;
+        $this->updated_at        = null;
+        $this->user_id           = 1;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $title = $this->getTitle();
         if (empty($title)) {
-            if ($this->getFolder() != null) {
-                $title = $this->getFolder()->getTitle();
-            } else {
-                $title = $this->getId();
-            }
+            $title = (null === $this->getFolder()) ? $this->getId() : $this->getFolder()->getTitle();
         }
 
         return (string) $title;
     }
 
-    public function getId()
-    {
-        return $this->item_id;
-    }
-
-    public function setIsActive($is_active)
-    {
-        $this->is_active = $is_active;
-        return $this;
-    }
-
-    public function getIsActive()
-    {
-        return $this->is_active;
-    }
-
-    public function setFolder($folder)
+    /**
+     * @param Folder|null $folder
+     *
+     * @return $this
+     */
+    public function setFolder(Folder $folder = null)
     {
         $this->folder = $folder;
+
         return $this;
     }
 
     /**
-     * @return \SmartCore\Bundle\EngineBundle\Entity\Folder
+     * @return Folder|null
      */
     public function getFolder()
     {
         return $this->folder;
     }
 
-    public function setGroup($group)
+    /**
+     * @param string $form_title
+     *
+     * @return $this
+     */
+    public function setFormTitle($form_title)
     {
-        $this->group = $group;
+        $this->form_title = $form_title;
+
         return $this;
     }
 
     /**
-     * @return Group
+     * @return string
      */
-    public function getGroup()
+    public function getFormTitle()
     {
-        return $this->group;
+        return $this->form_title;
     }
 
+    /**
+     * @return Menu
+     */
+    public function getMenu()
+    {
+        return $this->menu;
+    }
+
+    /**
+     * @param Menu $menu
+     *
+     * @return $this
+     */
+    public function setMenu(Menu $menu)
+    {
+        $this->menu = $menu;
+
+        return $this;
+    }
+
+    /**
+     * @return Item[]|ArrayCollection
+     */
     public function getChildren()
     {
         return $this->children;
     }
 
-    public function getCreated()
+    /**
+     * @param array|null $properties
+     *
+     * @return $this
+     */
+    public function setProperties(array $properties = null)
     {
-        return $this->created;
-    }
+        $this->properties = $properties;
 
-    public function setDescr($descr)
-    {
-        $this->descr = $descr;
         return $this;
     }
 
-    public function getDescr()
+    /**
+     * @return array|null
+     */
+    public function getProperties()
     {
-        return $this->descr;
+        return empty($this->properties) ? [] : $this->properties;
     }
 
-    public function setUrl($url)
+    /**
+     * @param string|null $url
+     *
+     * @return $this
+     */
+    public function setUrl($url = null)
     {
         $this->url = $url;
+
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getUrl()
     {
         return $this->url;
     }
 
-    public function setUpdated($updated)
+    /**
+     * @param bool $open_in_new_window
+     *
+     * @return $this
+     */
+    public function setOpenInNewWindow($open_in_new_window)
     {
-        $this->updated = $updated;
+        $this->open_in_new_window = $open_in_new_window;
+
         return $this;
     }
 
-    public function getUpdated()
+    /**
+     * @return bool
+     */
+    public function getOpenInNewWindow()
     {
-        return $this->updated;
+        return $this->open_in_new_window;
     }
 
-    public function setTitle($title)
-    {
-        $this->title = $title;
-        return $this;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setPosition($position)
-    {
-        if (empty($position)) {
-            $position = 0;
-        }
-
-        $this->position = $position;
-        return $this;
-    }
-
-    public function getPosition()
-    {
-        return $this->position;
-    }
-
+    /**
+     * @param Item|null $parent_item
+     *
+     * @return $this
+     */
     public function setParentItem($parent_item)
     {
         if (empty($parent_item) or $parent_item->getId() == $this->getId()) {
@@ -242,20 +256,12 @@ class Item
         return $this;
     }
 
+    /**
+     * @return Item|null
+     */
     public function getParentItem()
     {
         return $this->parent_item;
-    }
-
-    public function setCreateByUserId($create_by_user_id)
-    {
-        $this->create_by_user_id = $create_by_user_id;
-        return $this;
-    }
-
-    public function getCreateByUserId()
-    {
-        return $this->create_by_user_id;
     }
 
     /**
@@ -268,7 +274,7 @@ class Item
     {
         $parent = $this->getParentItem();
 
-        if(null == $parent) {
+        if (null == $parent) {
             return;
         }
 
@@ -291,10 +297,10 @@ class Item
     }
 
     /**
-     * @ORM\PreUpdate
+     * @ORM\PreUpdate()
      */
     public function onUpdated()
     {
-        $this->updated = new \DateTime();
+        $this->updated_at = new \DateTime();
     }
 }

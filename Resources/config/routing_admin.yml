@@ -1,18 +1,26 @@
-# @todo
-sc_menu_admin:
+
+smart_module.menu.admin:
     path: /
     defaults:
         _controller: MenuModule:Admin:index
-sc_menu_admin_group:
-    path: /{group_id}
+
+smart_module.menu.admin_menu:
+    path: /{menu_id}
     defaults:
-        _controller: MenuModule:Admin:group
+        _controller: MenuModule:Admin:menu
     requirements:
-        id: \d+
-sc_menu_admin_item:
-    path: /{group_id}/{item_id}
+        menu_id: \d+
+
+smart_module.menu.admin_menu_edit:
+    path: /{menu_id}/edit
+    defaults:
+        _controller: MenuModule:Admin:menuEdit
+    requirements:
+        menu_id: \d+
+
+smart_module.menu.admin_item:
+    path: /item/{item_id}
     defaults:
         _controller: MenuModule:Admin:item
     requirements:
-        group_id: \d+
         item_id: \d+
