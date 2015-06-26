@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class MenuModule extends ModuleBundle
 {
     /**
-     * Получить виджеты для рабочего стола.
+     * Получить виджеты для рабочего  стола.
      *
      * @return array
      */
