@@ -20,6 +20,10 @@ class ItemTreeType extends DoctrineType
             return $loader;
         };
 
+        // The "loader" option of DoctrineType was deprecated and will be removed in Symfony 3.0.
+        // You should override the getLoader() method instead in a custom type.
+        //
+        // @todo подумать как можно будет вызывать метод $loader->setMenu($options['menu']);
         $resolver->setDefaults([
             'choice_label' => 'form_title',
             'class'        => 'MenuModule:Item',
