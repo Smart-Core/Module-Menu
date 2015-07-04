@@ -21,10 +21,10 @@ class ItemTreeType extends DoctrineType
         };
 
         $resolver->setDefaults([
-            'menu'      => null,
-            'property'  => 'form_title',
-            'loader'    => $loader,
-            'class'     => 'MenuModule:Item',
+            'choice_label' => 'form_title',
+            'class'        => 'MenuModule:Item',
+            'loader'       => $loader,
+            'menu'         => null,
         ]);
     }
 
