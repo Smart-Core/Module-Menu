@@ -123,7 +123,7 @@ class AdminController extends Controller
                 $em->flush();
 
                 $this->getCacheService()->deleteTag('smart_module.menu');
-                $this->get('session')->getFlashBag()->add('success', 'Группа меню удалеа.');
+                $this->get('session')->getFlashBag()->add('success', 'Группа меню удалена.');
 
                 return $this->redirect($this->generateUrl('smart_module.menu.admin'));
             }

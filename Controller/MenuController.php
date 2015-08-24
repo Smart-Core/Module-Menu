@@ -34,9 +34,8 @@ class MenuController extends Controller
 
         $this->node->addFrontControl('edit')
             ->setTitle('Редактировать меню')
-            ->setUri($this->generateUrl('cms_admin_node_w_slug', [
-                'id'   => $this->node->getId(),
-                'slug' => $this->menu_id,
+            ->setUri($this->generateUrl('smart_module.menu.admin_menu', [
+                'menu_id' => $this->menu_id,
             ]));
 
         return new Response($menu);

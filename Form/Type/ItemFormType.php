@@ -17,7 +17,7 @@ class ItemFormType extends AbstractType
     protected $menu;
 
     /**
-     * Constructor.
+     * @param Menu|null $menu
      */
     public function __construct(Menu $menu = null)
     {
