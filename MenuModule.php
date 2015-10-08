@@ -8,6 +8,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class MenuModule extends ModuleBundle
 {
+    protected $adminMenuBeforeCode = '<i class="fa fa-indent"></i>';
+
     /**
      * Получить виджеты для рабочего стола.
      *
