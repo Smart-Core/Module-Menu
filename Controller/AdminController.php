@@ -22,7 +22,7 @@ class AdminController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $menu = $form->getData();
-                $menu->setUserId($this->getUser()->getId());
+                $menu->setUser($this->getUser());
                 $em->persist($menu);
                 $em->flush();
 
@@ -161,7 +161,7 @@ class AdminController extends Controller
                 if ($form->isValid()) {
                     /** @var Item $item */
                     $item = $form->getData();
-                    $item->setUserId($this->getUser()->getId());
+                    $item->setUser($this->getUser());
                     $item->setMenu($menu);
 
                     $em->persist($item);

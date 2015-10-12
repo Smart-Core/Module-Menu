@@ -21,7 +21,7 @@ class Item
     use ColumnTrait\Description;
     use ColumnTrait\Position;
     use ColumnTrait\Title;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var Item
@@ -96,7 +96,6 @@ class Item
         $this->title             = null;
         $this->url               = null;
         $this->updated_at        = null;
-        $this->user_id           = 1;
     }
 
     /**

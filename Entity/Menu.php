@@ -17,7 +17,7 @@ class Menu
     use ColumnTrait\CreatedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\UserId;
+    use ColumnTrait\FosUser;
 
     /**
      * @var Item[]|ArrayCollection
@@ -50,7 +50,6 @@ class Menu
         $this->position     = 0;
         $this->description  = null;
         $this->items        = new ArrayCollection();
-        $this->user_id      = 1;
     }
 
     /**
