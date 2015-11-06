@@ -2,11 +2,12 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $current_folder_path = $this->get('cms.context')->getCurrentFolderPath();
 
@@ -14,10 +15,10 @@ class MenuController extends Controller
 
         if (false == $menu = $this->getCacheService()->get($cache_key)) {
             // Хак для Menu\RequestVoter
-            $this->get('request')->attributes->set('__selected_inheritance', $this->selected_inheritance);
-            $this->get('request')->attributes->set('__current_folder_path', $current_folder_path);
+            $request->attributes->set('__selected_inheritance', $this->selected_inheritance);
+            $request->attributes->set('__current_folder_path', $current_folder_path);
 
-            $menu = $this->renderView('MenuModule::menu.html.twig', [
+            $menu = $this->get('twig')->render('MenuModule::menu.html.twig', [
                 'css_class'     => $this->css_class,
                 'current_class' => $this->current_class,
                 'depth'         => $this->depth,
@@ -28,8 +29,8 @@ class MenuController extends Controller
 
             $this->getCacheService()->set($cache_key, $menu, ['smart_module.menu', 'folder', 'node_'.$this->node->getId()]);
 
-            $this->get('request')->attributes->remove('__selected_inheritance');
-            $this->get('request')->attributes->remove('__current_folder_path');
+            $request->attributes->remove('__selected_inheritance');
+            $request->attributes->remove('__current_folder_path');
         }
 
         $this->node->addFrontControl('edit')
