@@ -1,6 +1,6 @@
 services:
-    menumodule.form.tree.item_tree_type: # KnpRad automatically create this service, so rewrite them.
+    menumodule.form.tree.item_tree_type:
         class: SmartCore\Module\Menu\Form\Tree\ItemTreeType
-        arguments: [ @doctrine ]
+        arguments: [ '@doctrine' ]
         tags:
             - { name: form.type, alias: smart_module_menu_item_tree }
