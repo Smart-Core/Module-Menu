@@ -43,7 +43,7 @@
             <div class="col-md-4">
                 <h3>Создать новое меню</h3>
 
-                <form action="{{ path('smart_module.menu.admin') }}" {{ form_enctype(form) }} method="post" class="form-vertical well">
+                <form action="{{ path('smart_module.menu.admin') }}" enctype="multipart/form-data" method="post" class="form-vertical well">
                     {{ form_widget(form) }}
                     <div class="control-group">
                         <div class="controls">

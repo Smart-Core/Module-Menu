@@ -82,9 +82,9 @@ class Item
     protected $form_title = '';
 
     /**
-     * Constructor.
+     * @param Menu|null $menu
      */
-    public function __construct()
+    public function __construct(Menu $menu = null)
     {
         $this->children          = new ArrayCollection();
         $this->created_at        = new \DateTime();
@@ -96,6 +96,10 @@ class Item
         $this->title             = null;
         $this->url               = null;
         $this->updated_at        = null;
+
+        if ($menu) {
+            $this->menu = $menu;
+        }
     }
 
     /**

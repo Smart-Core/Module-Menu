@@ -16,7 +16,7 @@ class AdminController extends Controller
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        $form = $this->createForm(new MenuFormType());
+        $form = $this->createForm(MenuFormType::class);
 
         if ($request->isMethod('POST') and $request->request->has('create')) {
             $form->handleRequest($request);
@@ -53,7 +53,7 @@ class AdminController extends Controller
         /** @var Item $item */
         $item = $em->find('MenuModule:Item', $item_id);
 
-        $form = $this->createForm(new ItemFormType(), $item);
+        $form = $this->createForm(ItemFormType::class, $item);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('update')) {
@@ -103,7 +103,7 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('smart_module.menu.admin'));
         }
 
-        $form = $this->createForm(new MenuFormType(), $menu);
+        $form = $this->createForm(MenuFormType::class, $menu);
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('update')) {
@@ -153,7 +153,7 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('smart_module.menu.admin'));
         }
 
-        $form = $this->createForm(new ItemFormType($menu), new Item());
+        $form = $this->createForm(ItemFormType::class, new Item($menu));
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create_item')) {

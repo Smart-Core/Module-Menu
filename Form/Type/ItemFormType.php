@@ -2,8 +2,10 @@
 
 namespace SmartCore\Module\Menu\Form\Type;
 
+use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use SmartCore\Module\Menu\Entity\Menu;
 use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Form\Tree\ItemTreeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,23 +32,23 @@ class ItemFormType extends AbstractType
             $this->menu = $options['data']->getMenu();
         }
 
+        if ($options['data'] instanceof Menu) {
+            $this->menu = $options['data'];
+        }
+
         $builder
             ->add('is_active')
-            ->add('parent_item', 'smart_module_menu_item_tree', [
+            ->add('parent_item', ItemTreeType::class, [ //'smart_module_menu_item_tree'
                 'menu'     => $this->menu,
                 'required' => false,
             ])
-            ->add('folder', 'cms_folder_tree', ['required' => false])
+            ->add('folder', FolderTreeType::class, ['required' => false]) // 'cms_folder_tree'
             ->add('title',  null, ['attr' => ['autofocus' => 'autofocus']])
             ->add('url')
             ->add('description')
             ->add('position')
             ->add('open_in_new_window')
         ;
-
-        if ($options['data']->getMenu() instanceof Menu) {
-            $this->menu = $options['data']->getMenu();
-        }
 
         if ($this->menu) {
             $properties = Yaml::parse($this->menu->getProperties());
@@ -64,7 +66,7 @@ class ItemFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SmartCore\Module\Menu\Entity\Item',
+            'data_class' => Item::class,
         ]);
     }
 

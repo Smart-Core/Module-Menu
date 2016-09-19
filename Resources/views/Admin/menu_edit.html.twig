@@ -14,8 +14,7 @@
 
         <h3>Свойства меню &laquo;{{ menu.name }}&raquo;</h3>
 
-    <form action="{{ path('smart_module.menu.admin_menu_edit', {'menu_id': menu.id }) }}" {{ form_enctype(form) }} method="post" class="form-horizontal well">
-
+    <form action="{{ path('smart_module.menu.admin_menu_edit', {'menu_id': menu.id }) }}" enctype="multipart/form-data" method="post" class="form-horizontal well">
         {{ form_widget(form) }}
         <div class="control-group">
             <div class="controls">

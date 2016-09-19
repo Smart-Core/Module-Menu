@@ -12,7 +12,7 @@
 <div class="box box-primary">
     <div class="box-header with-border">
 
-    <form action="{{ path('smart_module.menu.admin_item', {'item_id': item.id}) }}" {{ form_enctype(form) }} method="post" class="form-horizontal well">
+    <form action="{{ path('smart_module.menu.admin_item', {'item_id': item.id}) }}" enctype="multipart/form-data" method="post" class="form-horizontal well">
         {{ form_widget(form) }}
         <div class="control-group">
             <div class="controls">
