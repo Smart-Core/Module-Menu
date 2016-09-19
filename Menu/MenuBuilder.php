@@ -4,12 +4,15 @@ namespace SmartCore\Module\Menu\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use SmartCore\Module\Menu\Entity\Menu;
 use SmartCore\Module\Menu\Entity\Item;
 
-class MenuBuilder extends ContainerAware
+class MenuBuilder implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
