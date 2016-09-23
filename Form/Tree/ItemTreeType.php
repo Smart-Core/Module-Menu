@@ -74,6 +74,7 @@ class ItemTreeType extends DoctrineType
             'class'         => 'MenuModule:Item',
             'choice_loader' => $choiceLoader,
             'menu'          => null,
+            'required'      => false,
         ]);
     }
 

@@ -28,8 +28,7 @@ class ItemFormType extends AbstractType
         $builder
             ->add('is_active')
             ->add('parent_item', ItemTreeType::class, [
-                'menu'     => $menu,
-                'required' => false,
+                'menu' => $menu,
             ])
             ->add('folder', FolderTreeType::class, [
                 'required' => false,
