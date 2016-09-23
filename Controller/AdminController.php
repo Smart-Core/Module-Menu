@@ -28,7 +28,7 @@ class AdminController extends Controller
 
                 $this->get('session')->getFlashBag()->add('success', 'Меню создано.'); // @todo translate
 
-                return $this->redirect($this->generateUrl('smart_module.menu.admin_menu', ['menu_id' => $menu->getId()]));
+                return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $menu->getId()]);
             }
         }
 

@@ -22,7 +22,7 @@ class NodePropertiesFormType extends AbstractNodePropertiesFormType
         ;
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_module_menu_node_properties';
     }

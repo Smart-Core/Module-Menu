@@ -1,6 +1,6 @@
 services:
-    menumodule.form.tree.item_tree_type:
+    menumodule.form.type.item_tree:
         class: SmartCore\Module\Menu\Form\Tree\ItemTreeType
-        arguments: [ "@doctrine" ]
+        arguments: [ '@doctrine' ]
         tags:
             - { name: form.type, alias: smart_module_menu_item_tree }

@@ -13,36 +13,28 @@ use Symfony\Component\Yaml\Yaml;
 
 class ItemFormType extends AbstractType
 {
-    /**
-     * @var Menu
-     */
-    protected $menu;
-
-    /**
-     * @param Menu|null $menu
-     */
-    public function __construct(Menu $menu = null)
-    {
-        $this->menu = $menu;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (empty($this->menu) and $options['data'] instanceof Item) {
-            $this->menu = $options['data']->getMenu();
+        $menu = null;
+
+        if ($options['data'] instanceof Item) {
+            $menu = $options['data']->getMenu();
         }
 
         if ($options['data'] instanceof Menu) {
-            $this->menu = $options['data'];
+            $menu = $options['data'];
         }
 
         $builder
             ->add('is_active')
-            ->add('parent_item', ItemTreeType::class, [ //'smart_module_menu_item_tree'
-                'menu'     => $this->menu,
+            ->add('parent_item', ItemTreeType::class, [
+                'menu'     => $menu,
                 'required' => false,
             ])
-            ->add('folder', FolderTreeType::class, ['required' => false]) // 'cms_folder_tree'
+            ->add('folder', FolderTreeType::class, [
+                'required' => false,
+                'only_active' => true,
+            ])
             ->add('title',  null, ['attr' => ['autofocus' => 'autofocus']])
             ->add('url')
             ->add('description')
@@ -50,15 +42,16 @@ class ItemFormType extends AbstractType
             ->add('open_in_new_window')
         ;
 
-        if ($this->menu) {
-            $properties = Yaml::parse($this->menu->getProperties());
+        if ($menu) {
+            $properties = Yaml::parse($menu->getProperties());
 
             if (is_array($properties)) {
-                $builder->add($builder->create(
-                    'properties',
-                    new ItemPropertiesFormType($properties),
-                    ['required' => false]
-                ));
+                $builder->add(
+                    $builder->create('properties', ItemPropertiesFormType::class, [
+                        'required' => false,
+                        'properties' => $properties,
+                    ])
+                );
             }
         }
     }
@@ -70,7 +63,7 @@ class ItemFormType extends AbstractType
         ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'smart_module_menu_item';
     }

@@ -10,24 +10,16 @@ use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface;
 
 class ItemLoader implements EntityLoaderInterface
 {
-    /**
-     * @var EntityRepository
-     */
+    /** @var EntityRepository */
     private $repo;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $result;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $level;
 
-    /**
-     * @var Menu
-     */
+    /** @var Menu */
     protected $menu;
 
     /**
@@ -37,7 +29,7 @@ class ItemLoader implements EntityLoaderInterface
      */
     public function __construct(ObjectManager $em, $manager = null, $class = null)
     {
-        $this->repo  = $em->getRepository($class);
+        $this->repo = $em->getRepository($class);
     }
 
     /**
@@ -67,6 +59,9 @@ class ItemLoader implements EntityLoaderInterface
         return $this->result;
     }
 
+    /**
+     * @param Item|null $parent
+     */
     protected function addChild($parent = null)
     {
         $level = $this->level;
