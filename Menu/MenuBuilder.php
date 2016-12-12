@@ -125,10 +125,14 @@ class MenuBuilder implements ContainerAwareInterface
 
             if ($this->is_admin or $item->getIsActive()) {
                 $new_item = $menu->addChild($item_title, ['uri' => $uri]);
-                $new_item->setAttributes([
-                    //'class' => 'my_item', // @todo аттрибуты для пунктов меню.
-                    'title' => $item->getDescription(),
-                ])->setExtras($item->getProperties());
+                $new_item
+                    ->setAttributes([
+                        //'class' => 'my_item', // @todo аттрибуты для пунктов меню.
+                        'title' => $item->getDescription(),
+                    ])
+                    ->setExtras($item->getProperties())
+                    ->setExtra('translation_domain', false)
+                ;
 
                 if (!$this->is_admin and $item->getOpenInNewWindow()) {
                     $new_item->setLinkAttribute('target', '_blank');
