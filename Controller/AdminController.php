@@ -26,7 +26,7 @@ class AdminController extends Controller
                 $em->persist($menu);
                 $em->flush();
 
-                $this->get('session')->getFlashBag()->add('success', 'Меню создано.'); // @todo translate
+                $this->addFlash('success', 'Меню создано.');
 
                 return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $menu->getId()]);
             }
@@ -63,7 +63,7 @@ class AdminController extends Controller
                     $em->flush();
 
                     $this->getCacheService()->deleteTag('smart_module.menu');
-                    $this->get('session')->getFlashBag()->add('success', 'Пункт меню обновлён.'); // @todo translate
+                    $this->addFlash('success', 'Пункт меню обновлён.');
 
                     return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $item->getMenu()->getId()]);
                 }
@@ -73,7 +73,7 @@ class AdminController extends Controller
                 $em->flush();
 
                 $this->getCacheService()->deleteTag('smart_module.menu');
-                $this->get('session')->getFlashBag()->add('success', 'Пункт меню удалён.');
+                $this->addFlash('success', 'Пункт меню удалён.');
 
                 return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $item->getMenu()->getId()]);
             }
@@ -113,7 +113,7 @@ class AdminController extends Controller
                     $em->flush();
 
                     $this->getCacheService()->deleteTag('smart_module.menu');
-                    $this->get('session')->getFlashBag()->add('success', 'Группа меню обновлена.'); // @todo translate
+                    $this->addFlash('success', 'Группа меню обновлена.');
 
                     return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $menu_id]);
                 }
@@ -123,7 +123,7 @@ class AdminController extends Controller
                 $em->flush();
 
                 $this->getCacheService()->deleteTag('smart_module.menu');
-                $this->get('session')->getFlashBag()->add('success', 'Группа меню удалена.');
+                $this->addFlash('success', 'Группа меню удалена.');
 
                 return $this->redirectToRoute('smart_module.menu.admin');
             }
@@ -164,10 +164,9 @@ class AdminController extends Controller
                     $item->setUser($this->getUser());
                     $item->setMenu($menu);
 
-                    $em->persist($item);
-                    $em->flush();
+                    $this->persist($item, true);
 
-                    $this->get('session')->getFlashBag()->add('success', 'Пункт меню создан.'); // @todo translate
+                    $this->addFlash('success', 'Пункт меню создан.');
 
                     return $this->redirectToRoute('smart_module.menu.admin_menu', ['menu_id' => $menu_id]);
                 }
