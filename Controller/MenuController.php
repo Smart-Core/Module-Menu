@@ -18,11 +18,14 @@ class MenuController extends Controller
             $request->attributes->set('__selected_inheritance', $this->selected_inheritance);
             $request->attributes->set('__current_folder_path', $current_folder_path);
 
-            $menu = $this->get('twig')->render('MenuModule::menu.html.twig', [
+            /** @var \Doctrine\ORM\EntityManager $em */
+            $em = $this->get('doctrine.orm.entity_manager');
+
+            $menu = $this->renderView('@MenuModule/menu.html.twig', [
                 'css_class'     => $this->css_class,
                 'current_class' => $this->current_class,
                 'depth'         => $this->depth,
-                'menu'          => $this->getDoctrine()->getManager()->find('MenuModule:Menu', $this->menu_id),
+                'menu'          => $em->find('MenuModule:Menu', $this->menu_id),
             ]);
 
             //$menu = $this->get('html.tidy')->prettifyFragment($menu);

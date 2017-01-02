@@ -5,7 +5,6 @@ namespace SmartCore\Module\Menu\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use SmartCore\Module\Menu\Entity\Menu;
 use SmartCore\Module\Menu\Entity\Item;
 use SmartCore\Module\Menu\Form\Type\MenuFormType;
 use SmartCore\Module\Menu\Form\Type\ItemFormType;
@@ -14,8 +13,6 @@ class AdminController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
         $form = $this->createForm(MenuFormType::class);
 
         if ($request->isMethod('POST') and $request->request->has('create')) {
@@ -23,8 +20,7 @@ class AdminController extends Controller
             if ($form->isValid()) {
                 $menu = $form->getData();
                 $menu->setUser($this->getUser());
-                $em->persist($menu);
-                $em->flush();
+                $this->persist($menu, true);
 
                 $this->addFlash('success', 'Меню создано.');
 
@@ -32,9 +28,9 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('MenuModule:Admin:index.html.twig', [
-            'menus' => $em->getRepository('MenuModule:Menu')->findAll(),
-            'form'   => $form->createView(),
+        return $this->render('@MenuModule/Admin/index.html.twig', [
+            'menus' => $this->get('doctrine.orm.default_entity_manager')->getRepository('MenuModule:Menu')->findAll(),
+            'form'  => $form->createView(),
         ]);
     }
 
@@ -48,10 +44,8 @@ class AdminController extends Controller
      */
     public function itemAction(Request $request, $item_id)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
         /** @var Item $item */
-        $item = $em->find('MenuModule:Item', $item_id);
+        $item = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Item', $item_id);
 
         $form = $this->createForm(ItemFormType::class, $item);
 
@@ -59,8 +53,7 @@ class AdminController extends Controller
             if ($request->request->has('update')) {
                 $form->handleRequest($request);
                 if ($form->isValid()) {
-                    $em->persist($form->getData());
-                    $em->flush();
+                    $this->persist($form->getData(), true);
 
                     $this->getCacheService()->deleteTag('smart_module.menu');
                     $this->addFlash('success', 'Пункт меню обновлён.');
@@ -69,8 +62,7 @@ class AdminController extends Controller
                 }
             } elseif ($request->request->has('delete')) {
                 // @todo безопасное удаление, в частности отключение из нод и удаление всех связаных пунктов меню.
-                $em->remove($form->getData());
-                $em->flush();
+                $this->remove($form->getData(), true);
 
                 $this->getCacheService()->deleteTag('smart_module.menu');
                 $this->addFlash('success', 'Пункт меню удалён.');
@@ -79,7 +71,7 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('MenuModule:Admin:item.html.twig', [
+        return $this->render('@MenuModule/Admin/item.html.twig', [
             'item' => $item,
             'form' => $form->createView(),
         ]);
@@ -95,9 +87,7 @@ class AdminController extends Controller
      */
     public function menuEditAction(Request $request, $menu_id)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $menu = $em->find('MenuModule:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Menu', $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');
@@ -109,8 +99,7 @@ class AdminController extends Controller
             if ($request->request->has('update')) {
                 $form->handleRequest($request);
                 if ($form->isValid()) {
-                    $em->persist($form->getData());
-                    $em->flush();
+                    $this->persist($form->getData(), true);
 
                     $this->getCacheService()->deleteTag('smart_module.menu');
                     $this->addFlash('success', 'Группа меню обновлена.');
@@ -119,8 +108,7 @@ class AdminController extends Controller
                 }
             } elseif ($request->request->has('delete')) {
                 // @todo безопасное удаление, в частности отключение из нод и удаление всех связаных пунктов меню.
-                $em->remove($form->getData());
-                $em->flush();
+                $this->remove($form->getData(), true);
 
                 $this->getCacheService()->deleteTag('smart_module.menu');
                 $this->addFlash('success', 'Группа меню удалена.');
@@ -129,9 +117,9 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('MenuModule:Admin:menu_edit.html.twig', [
+        return $this->render('@MenuModule/Admin/menu_edit.html.twig', [
             'menu' => $menu,
-            'form'  => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -145,9 +133,7 @@ class AdminController extends Controller
      */
     public function menuAction(Request $request, $menu_id)
     {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $menu = $em->find('MenuModule:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Menu', $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');
@@ -161,8 +147,10 @@ class AdminController extends Controller
                 if ($form->isValid()) {
                     /** @var Item $item */
                     $item = $form->getData();
-                    $item->setUser($this->getUser());
-                    $item->setMenu($menu);
+                    $item
+                        ->setUser($this->getUser())
+                        ->setMenu($menu)
+                    ;
 
                     $this->persist($item, true);
 
@@ -173,7 +161,7 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('MenuModule:Admin:menu.html.twig', [
+        return $this->render('@MenuModule/Admin/menu.html.twig', [
             'menu' => $menu,
             'form' => $form->createView(),
         ]);
