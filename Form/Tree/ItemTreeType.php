@@ -51,7 +51,7 @@ class ItemTreeType extends DoctrineType
 
         $resolver->setDefaults([
             'choice_label'  => 'form_title',
-            'class'         => 'MenuModule:Item',
+            'class'         => 'MenuModuleBundle:Item',
             'choice_loader' => $choiceLoader,
             'menu'          => null,
             'required'      => false,

@@ -25,7 +25,7 @@ class MenuController extends Controller
                 'css_class'     => $this->css_class,
                 'current_class' => $this->current_class,
                 'depth'         => $this->depth,
-                'menu'          => $em->find('MenuModule:Menu', $this->menu_id),
+                'menu'          => $em->find('MenuModuleBundle:Menu', $this->menu_id),
             ]);
 
             //$menu = $this->get('html.tidy')->prettifyFragment($menu);

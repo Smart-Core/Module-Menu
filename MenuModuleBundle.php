@@ -6,7 +6,7 @@ use SmartCore\Bundle\CMSBundle\Module\ModuleBundle;
 use SmartCore\Module\Menu\DependencyInjection\Compiler\FormPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class MenuModule extends ModuleBundle
+class MenuModuleBundle extends ModuleBundle
 {
     protected $adminMenuBeforeCode = '<i class="fa fa-indent"></i>';
 
@@ -19,7 +19,7 @@ class MenuModule extends ModuleBundle
     {
         $em     = $this->container->get('doctrine.orm.default_entity_manager');
         $r      = $this->container->get('router');
-        $menus  = $em->getRepository('MenuModule:Menu')->findAll();
+        $menus  = $em->getRepository('MenuModuleBundle:Menu')->findAll();
 
         $data = [
             'title' => 'Меню',

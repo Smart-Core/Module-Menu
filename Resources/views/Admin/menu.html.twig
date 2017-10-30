@@ -16,7 +16,7 @@
             <div class="col-md-6">
                 <h3>Пункты меню &laquo;{{ menu.name }}&raquo;</h3>
 
-                {% set menuItems = knp_menu_get('MenuModule:MenuBuilder:full', [], {
+                {% set menuItems = knp_menu_get('MenuModuleBundle:MenuBuilder:full', [], {
                     'menu': menu,
                     'is_admin': true,
                 }) %}

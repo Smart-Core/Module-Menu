@@ -29,7 +29,7 @@ class AdminController extends Controller
         }
 
         return $this->render('@MenuModule/Admin/index.html.twig', [
-            'menus' => $this->get('doctrine.orm.default_entity_manager')->getRepository('MenuModule:Menu')->findAll(),
+            'menus' => $this->get('doctrine.orm.default_entity_manager')->getRepository('MenuModuleBundle:Menu')->findAll(),
             'form'  => $form->createView(),
         ]);
     }
@@ -45,7 +45,7 @@ class AdminController extends Controller
     public function itemAction(Request $request, $item_id)
     {
         /** @var Item $item */
-        $item = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Item', $item_id);
+        $item = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Item', $item_id);
 
         $form = $this->createForm(ItemFormType::class, $item);
 
@@ -87,7 +87,7 @@ class AdminController extends Controller
      */
     public function menuEditAction(Request $request, $menu_id)
     {
-        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Menu', $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');
@@ -133,7 +133,7 @@ class AdminController extends Controller
      */
     public function menuAction(Request $request, $menu_id)
     {
-        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModule:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Menu', $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');

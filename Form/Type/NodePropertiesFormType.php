@@ -18,7 +18,7 @@ class NodePropertiesFormType extends AbstractNodePropertiesFormType
             ->add('css_class',      TextType::class,     ['required' => false])
             ->add('current_class',  TextType::class,     ['required' => false])
             ->add('selected_inheritance', CheckboxType::class, ['required' => false])
-            ->add('menu_id',        ChoiceType::class,   ['choices' => $this->getChoicesByEntity('MenuModule:Menu')])
+            ->add('menu_id',        ChoiceType::class,   ['choices' => $this->getChoicesByEntity('MenuModuleBundle:Menu')])
         ;
     }
 
