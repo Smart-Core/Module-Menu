@@ -5,7 +5,7 @@ namespace SmartCore\Module\Menu\Form\Tree;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use SmartCore\Module\Menu\Entity\Menu;
-use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Entity\MenuItem;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityLoaderInterface;
 
 class ItemLoader implements EntityLoaderInterface
@@ -60,7 +60,7 @@ class ItemLoader implements EntityLoaderInterface
     }
 
     /**
-     * @param Item|null $parent
+     * @param MenuItem|null $parent
      */
     protected function addChild($parent = null)
     {
@@ -79,7 +79,7 @@ class ItemLoader implements EntityLoaderInterface
             ['position' => 'ASC']
         );
 
-        /** @var $item Item */
+        /** @var $item MenuItem */
         foreach ($items as $item) {
             $item->setFormTitle($ident.$item);
             $this->result[] = $item;

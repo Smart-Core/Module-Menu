@@ -3,7 +3,7 @@
 namespace SmartCore\Module\Menu\Form\Tree;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Entity\MenuItem;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\DoctrineChoiceLoader;
 use Symfony\Bridge\Doctrine\Form\Type\DoctrineType;
 use Symfony\Component\Form\ChoiceList\Factory\CachingFactoryDecorator;
@@ -52,7 +52,7 @@ class ItemTreeType extends DoctrineType
 
         $resolver->setDefaults([
             'choice_label'  => 'form_title',
-            'class'         => Item::class,
+            'class'         => MenuItem::class,
             'choice_loader' => $choiceLoader,
             'menu'          => null,
             'required'      => false,

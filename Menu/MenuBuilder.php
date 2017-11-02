@@ -7,7 +7,7 @@ use Knp\Menu\ItemInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use SmartCore\Module\Menu\Entity\Menu;
-use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Entity\MenuItem;
 
 class MenuBuilder implements ContainerAwareInterface
 {
@@ -96,15 +96,15 @@ class MenuBuilder implements ContainerAwareInterface
      * Рекурсивное построение дерева.
      *
      * @param ItemInterface $menu
-     * @param Item|null     $parent_item
+     * @param MenuItem|null $parent_item
      */
-    protected function addChild(ItemInterface $menu, Item $parent_item = null)
+    protected function addChild(ItemInterface $menu, MenuItem $parent_item = null)
     {
         $items = (null == $parent_item)
-            ? $this->em->getRepository(Item::class)->findByParent($this->menu, null)
+            ? $this->em->getRepository(MenuItem::class)->findByParent($this->menu, null)
             : $parent_item->getChildren();
 
-        /** @var Item $item */
+        /** @var MenuItem $item */
         foreach ($items as $item) {
             if ($this->is_admin) {
                 $uri = $this->container->get('router')->generate('smart_module.menu.admin_item', ['item_id' => $item->getId()]);

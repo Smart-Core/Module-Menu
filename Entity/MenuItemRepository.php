@@ -4,15 +4,15 @@ namespace SmartCore\Module\Menu\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-class ItemRepository extends EntityRepository
+class MenuItemRepository extends EntityRepository
 {
     /**
-     * @param Menu      $menu
-     * @param Item|null $parent_item
+     * @param Menu          $menu
+     * @param MenuItem|null $parent_item
      *
-     * @return Item[]
+     * @return MenuItem[]
      */
-    public function findByParent(Menu $menu, Item $parent_item = null)
+    public function findByParent(Menu $menu, MenuItem $parent_item = null)
     {
         return $this->findBy([
             'parent_item' => $parent_item,

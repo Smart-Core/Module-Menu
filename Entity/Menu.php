@@ -20,9 +20,9 @@ class Menu
     use ColumnTrait\FosUser;
 
     /**
-     * @var Item[]|ArrayCollection
+     * @var MenuItem[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="menu", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="MenuItem", mappedBy="menu", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     protected $items;
 
@@ -42,7 +42,7 @@ class Menu
     protected $properties;
 
     /**
-     * Constructor.
+     * Menu constructor.
      */
     public function __construct()
     {
@@ -101,7 +101,7 @@ class Menu
     }
 
     /**
-     * @param Item[] $items
+     * @param MenuItem[] $items
      *
      * @return $this
      */
@@ -113,7 +113,7 @@ class Menu
     }
 
     /**
-     * @return Item[]
+     * @return MenuItem[]
      */
     public function getItems()
     {

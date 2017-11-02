@@ -4,7 +4,7 @@ namespace SmartCore\Module\Menu\Form\Type;
 
 use SmartCore\Bundle\CMSBundle\Form\Tree\FolderTreeType;
 use SmartCore\Module\Menu\Entity\Menu;
-use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Entity\MenuItem;
 use SmartCore\Module\Menu\Form\Tree\ItemTreeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +17,7 @@ class ItemFormType extends AbstractType
     {
         $menu = null;
 
-        if ($options['data'] instanceof Item) {
+        if ($options['data'] instanceof MenuItem) {
             $menu = $options['data']->getMenu();
         }
 
@@ -58,7 +58,7 @@ class ItemFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Item::class,
+            'data_class' => MenuItem::class,
         ]);
     }
 

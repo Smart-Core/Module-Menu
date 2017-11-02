@@ -6,7 +6,7 @@ use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use SmartCore\Module\Menu\Entity\Item;
+use SmartCore\Module\Menu\Entity\MenuItem;
 use SmartCore\Module\Menu\Form\Type\MenuFormType;
 use SmartCore\Module\Menu\Form\Type\ItemFormType;
 
@@ -45,8 +45,8 @@ class AdminController extends Controller
      */
     public function itemAction(Request $request, $item_id)
     {
-        /** @var Item $item */
-        $item = $this->get('doctrine.orm.default_entity_manager')->find(Item::class, $item_id);
+        /** @var MenuItem $item */
+        $item = $this->get('doctrine.orm.default_entity_manager')->find(MenuItem::class, $item_id);
 
         $form = $this->createForm(ItemFormType::class, $item);
 
@@ -140,13 +140,13 @@ class AdminController extends Controller
             return $this->redirectToRoute('smart_module.menu.admin');
         }
 
-        $form = $this->createForm(ItemFormType::class, new Item($menu));
+        $form = $this->createForm(ItemFormType::class, new MenuItem($menu));
 
         if ($request->isMethod('POST')) {
             if ($request->request->has('create_item')) {
                 $form->handleRequest($request);
                 if ($form->isValid()) {
-                    /** @var Item $item */
+                    /** @var MenuItem $item */
                     $item = $form->getData();
                     $item
                         ->setUser($this->getUser())
