@@ -4,6 +4,7 @@ namespace SmartCore\Module\Menu;
 
 use SmartCore\Bundle\CMSBundle\Module\ModuleBundle;
 use SmartCore\Module\Menu\DependencyInjection\Compiler\FormPass;
+use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class MenuModuleBundle extends ModuleBundle
@@ -19,7 +20,7 @@ class MenuModuleBundle extends ModuleBundle
     {
         $em     = $this->container->get('doctrine.orm.default_entity_manager');
         $r      = $this->container->get('router');
-        $menus  = $em->getRepository('MenuModuleBundle:Menu')->findAll();
+        $menus  = $em->getRepository(Menu::class)->findAll();
 
         $data = [
             'title' => 'Меню',

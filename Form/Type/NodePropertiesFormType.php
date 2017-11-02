@@ -3,6 +3,7 @@
 namespace SmartCore\Module\Menu\Form\Type;
 
 use SmartCore\Bundle\CMSBundle\Module\AbstractNodePropertiesFormType;
+use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -18,7 +19,7 @@ class NodePropertiesFormType extends AbstractNodePropertiesFormType
             ->add('css_class',      TextType::class,     ['required' => false])
             ->add('current_class',  TextType::class,     ['required' => false])
             ->add('selected_inheritance', CheckboxType::class, ['required' => false])
-            ->add('menu_id',        ChoiceType::class,   ['choices' => $this->getChoicesByEntity('MenuModuleBundle:Menu')])
+            ->add('menu_id',        ChoiceType::class,   ['choices' => $this->getChoicesByEntity(Menu::class)])
         ;
     }
 

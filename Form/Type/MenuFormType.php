@@ -2,6 +2,7 @@
 
 namespace SmartCore\Module\Menu\Form\Type;
 
+use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +22,7 @@ class MenuFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'SmartCore\Module\Menu\Entity\Menu',
+            'data_class' => Menu::class,
         ]);
     }
 

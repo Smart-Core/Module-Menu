@@ -101,7 +101,7 @@ class MenuBuilder implements ContainerAwareInterface
     protected function addChild(ItemInterface $menu, Item $parent_item = null)
     {
         $items = (null == $parent_item)
-            ? $this->em->getRepository('MenuModuleBundle:Item')->findByParent($this->menu, null)
+            ? $this->em->getRepository(Item::class)->findByParent($this->menu, null)
             : $parent_item->getChildren();
 
         /** @var Item $item */

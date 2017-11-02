@@ -2,6 +2,7 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
+use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,7 +26,7 @@ class MenuController extends Controller
                 'css_class'     => $this->css_class,
                 'current_class' => $this->current_class,
                 'depth'         => $this->depth,
-                'menu'          => $em->find('MenuModuleBundle:Menu', $this->menu_id),
+                'menu'          => $em->find(Menu::class, $this->menu_id),
             ]);
 
             //$menu = $this->get('html.tidy')->prettifyFragment($menu);

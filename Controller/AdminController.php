@@ -2,6 +2,7 @@
 
 namespace SmartCore\Module\Menu\Controller;
 
+use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class AdminController extends Controller
         }
 
         return $this->render('@MenuModule/Admin/index.html.twig', [
-            'menus' => $this->get('doctrine.orm.default_entity_manager')->getRepository('MenuModuleBundle:Menu')->findAll(),
+            'menus' => $this->get('doctrine.orm.default_entity_manager')->getRepository(Menu::class)->findAll(),
             'form'  => $form->createView(),
         ]);
     }
@@ -45,7 +46,7 @@ class AdminController extends Controller
     public function itemAction(Request $request, $item_id)
     {
         /** @var Item $item */
-        $item = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Item', $item_id);
+        $item = $this->get('doctrine.orm.default_entity_manager')->find(Item::class, $item_id);
 
         $form = $this->createForm(ItemFormType::class, $item);
 
@@ -87,7 +88,7 @@ class AdminController extends Controller
      */
     public function menuEditAction(Request $request, $menu_id)
     {
-        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find(Menu::class, $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');
@@ -133,7 +134,7 @@ class AdminController extends Controller
      */
     public function menuAction(Request $request, $menu_id)
     {
-        $menu = $this->get('doctrine.orm.default_entity_manager')->find('MenuModuleBundle:Menu', $menu_id);
+        $menu = $this->get('doctrine.orm.default_entity_manager')->find(Menu::class, $menu_id);
 
         if (empty($menu)) {
             return $this->redirectToRoute('smart_module.menu.admin');
