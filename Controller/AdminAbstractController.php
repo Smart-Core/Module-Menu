@@ -10,7 +10,7 @@ use SmartCore\Module\Menu\Entity\MenuItem;
 use SmartCore\Module\Menu\Form\Type\MenuFormType;
 use SmartCore\Module\Menu\Form\Type\ItemFormType;
 
-class AdminController extends Controller
+class AdminAbstractController extends AbstractController
 {
     public function indexAction(Request $request)
     {

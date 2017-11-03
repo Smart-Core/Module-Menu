@@ -6,7 +6,7 @@ use SmartCore\Module\Menu\Entity\Menu;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class MenuController extends Controller
+class MenuAbstractController extends AbstractController
 {
     public function indexAction(Request $request)
     {

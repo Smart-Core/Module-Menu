@@ -4,9 +4,9 @@ namespace SmartCore\Module\Menu\Controller;
 
 use SmartCore\Bundle\CMSBundle\Module\CacheTrait;
 use SmartCore\Bundle\CMSBundle\Module\NodeTrait;
-use Smart\CoreBundle\Controller\Controller as BaseController;
+use Smart\CoreBundle\Controller\Controller;
 
-abstract class Controller extends BaseController
+abstract class AbstractController extends Controller
 {
     use CacheTrait;
     use NodeTrait;
